@@ -15,6 +15,19 @@ PublishMessage::PublishMessage(QWidget *widget)
     Ui_Init(widget);
 }
 
+void PublishMessage::Init_Variables(void)
+{
+    DUP = 0;
+    QoS = 0;
+    RETAIN = 0;
+    topic_name.clear();
+    pack_id = 0;
+    Payload.clear();
+
+    RemainingLength.clear();
+    All_Byte.clear();
+}
+
 void PublishMessage::Generate_Message(void)
 {
     //第一个字节
@@ -24,13 +37,13 @@ void PublishMessage::Generate_Message(void)
 
     //剩余长度
     quint32 overlength = 0;
-    overlength = sizeof(topic_len) + topic_name.length() + sizeof(pack_id) + Payload.length();
+    overlength = 2 + topic_name.length() + 2 + Payload.length();
     Compute_Remaining_Length(overlength);
     All_Byte.append(RemainingLength);
 
     //主题长度
-    All_Byte.append(topic_len/256);
-    All_Byte.append(topic_len%256);
+    All_Byte.append(topic_name.length()/256);
+    All_Byte.append(topic_name.length()%256);
 
     //主题名
     All_Byte.append(topic_name);
@@ -110,6 +123,7 @@ void PublishMessage::Ui_Init(QWidget *widget)
     //创建报文标识符输入框
     QLabel * pack_id_label = new QLabel("Packet Identifier:");
     pack_id_lineedit = new QLineEdit();
+    pack_id_lineedit->setText("0");
 
     //报文标识符的水平布局
     QHBoxLayout *hLayout_5 = new QHBoxLayout();
@@ -164,17 +178,16 @@ void PublishMessage::Ui_Init(QWidget *widget)
 void PublishMessage::slots_generate_button_clicked(void)
 {
     //先将成员变量初始化
+    Init_Variables();
 
     DUP = dup_combobox->currentData().toInt();
     QoS = qos_combobox->currentData().toInt();
     RETAIN = retain_combobox->currentData().toInt();
 
     //如果topic是ascii
+    QString topic = topic_textedit->toPlainText();
     if( topic_RadioGroup->checkedId() == 0 )
     {
-        QString topic = topic_textedit->toPlainText();
-        topic_len = topic.length();
-
         char*  ch;
         QByteArray ba = topic.toLatin1(); // must
         ch=ba.data();
@@ -185,17 +198,22 @@ void PublishMessage::slots_generate_button_clicked(void)
     //否则是hex
     else
     {
-
+        topic = topic.trimmed();
+        QStringList str_list = topic.split(" ");
+        foreach (QString s, str_list)
+        {
+            if(s.isEmpty() == false)
+                topic_name.append((quint8)s.toInt(0, 16));
+        }
     }
 
     //报文标识符
     pack_id = pack_id_lineedit->text().toInt();
 
     //如果Payload是ascii
+    QString payload = payload_textedit->toPlainText();
     if( payload_RadioGroup->checkedId() == 0 )
     {
-        QString payload = payload_textedit->toPlainText();
-
         char*  ch;
         QByteArray ba = payload.toLatin1(); // must
         ch=ba.data();
@@ -206,7 +224,13 @@ void PublishMessage::slots_generate_button_clicked(void)
     //否则是hex
     else
     {
-
+        payload = payload.trimmed();
+        QStringList str_list = payload.split(" ");
+        foreach (QString s, str_list)
+        {
+            if(s.isEmpty() == false)
+                payload.append((quint8)s.toInt(0, 16));
+        }
     }
 
     Generate_Message();
@@ -214,9 +238,11 @@ void PublishMessage::slots_generate_button_clicked(void)
     QString str;
     for(int i=0; i<All_Byte.length(); i++ )
     {
-        str += QString::number(All_Byte.at(i), 16);
+        //str += QString::number(All_Byte.at(i), 16).toUpper();
+        str += QString("%1").arg(All_Byte.at(i), 2, 16, QLatin1Char('0')).toUpper();
         str += " ";
     }
 
+    cmd_textedit->clear();
     cmd_textedit->setText(str);
 }

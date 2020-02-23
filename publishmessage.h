@@ -18,7 +18,6 @@ public:
     quint8 QoS;
     quint8 RETAIN;
 
-    quint16 topic_len;
     QList<quint8> topic_name;
     quint16 pack_id;
     QList<quint8> Payload;
@@ -26,6 +25,7 @@ public:
     void Generate_Message(void);
 
     void Ui_Init(QWidget *widget);
+    void Init_Variables(void);
 
 private slots:
     void slots_generate_button_clicked(void);
