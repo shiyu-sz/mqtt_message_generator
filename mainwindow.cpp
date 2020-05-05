@@ -22,8 +22,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     //初始化PUBLISH报文页面
     QWidget *publish_widget = new QWidget();
-    PublishMessage * publish_obj = new PublishMessage(publish_widget);
+    PublishMessage * publish_obj = new PublishMessage(this);
+    publish_obj->uiInit(publish_widget);
     tabwidget->addTab(publish_widget, "PUBLISH");
+
+//    publish_obj->setDup(0);
+//    publish_obj->setQos(0);
+//    publish_obj->setRetain(1);
+//    publish_obj->setTopicName("123");
+//    publish_obj->setPackId(12);
+//    publish_obj->setPayload("456");
+//    qDebug() << "message" <<publish_obj->generateMessage();
+
 }
 
 MainWindow::~MainWindow()

@@ -4,15 +4,14 @@
 
 ControlMessage::ControlMessage()
 {
-    RemainingLength.clear();
-    All_Byte.clear();
 }
 
 
-void ControlMessage::Compute_Remaining_Length(quint32 num)
+QList<quint8> ControlMessage::ComputeRemainingLength(quint32 num)
 {
     quint32 x = num;
     quint8 encodedByte = 0;
+    QList<quint8> length;
 
     do
     {
@@ -20,7 +19,9 @@ void ControlMessage::Compute_Remaining_Length(quint32 num)
         x = x / 128;
         if( x > 0 )
             encodedByte |= 0x80;
-        RemainingLength.append(encodedByte);
+        length.append(encodedByte);
     }
     while( x > 0 );
+
+    return length;
 }

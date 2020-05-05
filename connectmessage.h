@@ -6,8 +6,11 @@
 class ConnectMessage : public ControlMessage
 {
 public:
-    ConnectMessage();
+    ConnectMessage(QWidget *parent);
 
+private slots:
+
+private:
     quint8 type;
 
 };

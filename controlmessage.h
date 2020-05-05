@@ -27,10 +27,7 @@ public:
         DISCONNECT,
     };
 
-    QList<quint8> RemainingLength;
-    void Compute_Remaining_Length(quint32 num);
-
-    QList<quint8> All_Byte;
+    QList<quint8> ComputeRemainingLength(quint32 num);
 };
 
 #endif // CONTROLMESSAGE_H

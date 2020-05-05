@@ -10,55 +10,141 @@
 #include <QPushButton>
 #include "publishmessage.h"
 
-PublishMessage::PublishMessage(QWidget *widget)
+PublishMessage::PublishMessage(QWidget *parent)
 {
-    Ui_Init(widget);
+
 }
 
-void PublishMessage::Init_Variables(void)
+/**
+ * @brief PublishMessage::setDup
+ * @param value
+ */
+void PublishMessage::setDup(quint8 value)
 {
-    DUP = 0;
-    QoS = 0;
-    RETAIN = 0;
+    DUP = value;
+}
+
+/**
+ * @brief PublishMessage::setQos
+ * @param value
+ */
+void PublishMessage::setQos(quint8 value)
+{
+    QoS = value;
+}
+
+/**
+ * @brief PublishMessage::setRetain
+ * @param value
+ */
+void PublishMessage::setRetain(quint8 value)
+{
+    RETAIN = value;
+}
+
+/**
+ * @brief PublishMessage::setTopicName
+ * @param value
+ */
+void PublishMessage::setTopicName(QString value)
+{
     topic_name.clear();
-    pack_id = 0;
+
+    char*  ch;
+    QByteArray ba = value.toLatin1(); // must
+    ch=ba.data();
+
+    for(int i=0; i<ba.length(); i++)
+        topic_name.append((quint8)ch[i]);
+}
+
+/**
+ * @brief PublishMessage::setTopicName
+ * @param value
+ */
+void PublishMessage::setTopicName(QList<quint8> value)
+{
+    topic_name.clear();
+    topic_name = value;
+}
+
+/**
+ * @brief PublishMessage::setPackId
+ * @param value
+ */
+void PublishMessage::setPackId(quint16 value)
+{
+    pack_id = value;
+}
+
+/**
+ * @brief PublishMessage::setPayload
+ * @param value
+ */
+void PublishMessage::setPayload(QString value)
+{
     Payload.clear();
 
-    RemainingLength.clear();
-    All_Byte.clear();
+    char*  ch;
+    QByteArray ba = value.toLatin1(); // must
+    ch=ba.data();
+
+    for(int i=0; i<ba.length(); i++)
+        Payload.append((quint8)ch[i]);
 }
 
-void PublishMessage::Generate_Message(void)
+/**
+ * @brief PublishMessage::setPayload
+ * @param value
+ */
+void PublishMessage::setPayload(QList<quint8> value)
 {
+    Payload.clear();
+    Payload = value;
+}
+
+/**
+ * @brief PublishMessage::generateMessage 生成报文
+ * @return
+ */
+QList<quint8> PublishMessage::generateMessage(void)
+{
+    QList<quint8> all_byte;
+
     //第一个字节
     quint8 head = 0;
     head = (type&0x0f)<<4 | (DUP&0x01)<<3 | (QoS&0x03)<<1 | (RETAIN&0x01);
-    All_Byte.append(head);
+    all_byte.append(head);
 
     //剩余长度
     quint32 overlength = 0;
+    QList<quint8> len;
     overlength = 2 + topic_name.length() + 2 + Payload.length();
-    Compute_Remaining_Length(overlength);
-    All_Byte.append(RemainingLength);
+    len = ComputeRemainingLength(overlength);
+    all_byte.append(len);
 
     //主题长度
-    All_Byte.append(topic_name.length()/256);
-    All_Byte.append(topic_name.length()%256);
+    all_byte.append(topic_name.length()/256);
+    all_byte.append(topic_name.length()%256);
 
     //主题名
-    All_Byte.append(topic_name);
+    all_byte.append(topic_name);
 
     //标识符
-    All_Byte.append(pack_id/256);
-    All_Byte.append(pack_id%256);
+    all_byte.append(pack_id/256);
+    all_byte.append(pack_id%256);
 
     //有效载荷
-    All_Byte.append(Payload);
+    all_byte.append(Payload);
 
-    qDebug() << "All_Byte = " << All_Byte;
+    return all_byte;
 }
 
-void PublishMessage::Ui_Init(QWidget *widget)
+/**
+ * @brief PublishMessage::uiInit 初始化ui
+ * @param widget
+ */
+void PublishMessage::uiInit(QWidget *widget)
 {
     //创建dup
     QLabel * dup_label = new QLabel("DUP:");
@@ -174,72 +260,64 @@ void PublishMessage::Ui_Init(QWidget *widget)
     widget->setLayout(vLayout);
 }
 
-//成生按钮的槽
+/**
+ * @brief PublishMessage::slots_generate_button_clicked ui中的按钮槽
+ */
 void PublishMessage::slots_generate_button_clicked(void)
 {
-    //先将成员变量初始化
-    Init_Variables();
-
-    DUP = dup_combobox->currentData().toInt();
-    QoS = qos_combobox->currentData().toInt();
-    RETAIN = retain_combobox->currentData().toInt();
+    setDup(dup_combobox->currentData().toInt());
+    setQos(qos_combobox->currentData().toInt());
+    setRetain(retain_combobox->currentData().toInt());
 
     //如果topic是ascii
     QString topic = topic_textedit->toPlainText();
     if( topic_RadioGroup->checkedId() == 0 )
     {
-        char*  ch;
-        QByteArray ba = topic.toLatin1(); // must
-        ch=ba.data();
-
-        for(int i=0; i<ba.length(); i++)
-            topic_name.append((quint8)ch[i]);
+        setTopicName(topic);
     }
     //否则是hex
     else
     {
+        QList<quint8> data;
         topic = topic.trimmed();
         QStringList str_list = topic.split(" ");
         foreach (QString s, str_list)
         {
             if(s.isEmpty() == false)
-                topic_name.append((quint8)s.toInt(0, 16));
+                data.append((quint8)s.toInt(0, 16));
         }
+        setTopicName(data);
     }
 
     //报文标识符
-    pack_id = pack_id_lineedit->text().toInt();
+    setPackId(pack_id_lineedit->text().toInt());
 
     //如果Payload是ascii
     QString payload = payload_textedit->toPlainText();
     if( payload_RadioGroup->checkedId() == 0 )
     {
-        char*  ch;
-        QByteArray ba = payload.toLatin1(); // must
-        ch=ba.data();
-
-        for(int i=0; i<ba.length(); i++)
-            Payload.append((quint8)ch[i]);
+        setPayload(payload);
     }
     //否则是hex
     else
     {
+        QList<quint8> data;
         payload = payload.trimmed();
         QStringList str_list = payload.split(" ");
         foreach (QString s, str_list)
         {
             if(s.isEmpty() == false)
-                payload.append((quint8)s.toInt(0, 16));
+                data.append((quint8)s.toInt(0, 16));
         }
+        setPayload(data);
     }
 
-    Generate_Message();
+    QList<quint8> message = generateMessage();
 
     QString str;
-    for(int i=0; i<All_Byte.length(); i++ )
+    for(int i=0; i<message.length(); i++ )
     {
-        //str += QString::number(All_Byte.at(i), 16).toUpper();
-        str += QString("%1").arg(All_Byte.at(i), 2, 16, QLatin1Char('0')).toUpper();
+        str += QString("%1").arg(message.at(i), 2, 16, QLatin1Char('0')).toUpper();
         str += " ";
     }
 

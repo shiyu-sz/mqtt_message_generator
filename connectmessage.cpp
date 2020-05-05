@@ -1,6 +1,6 @@
 #include "connectmessage.h"
 
-ConnectMessage::ConnectMessage()
+ConnectMessage::ConnectMessage(QWidget *parent)
 {
 
 }
