@@ -27,6 +27,7 @@ public:
 
 private slots:
     void slots_generate_button_clicked(void);
+    void slots_generate_cpoy_button_clicked(void);
 
 private:
     QComboBox * dup_combobox;

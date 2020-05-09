@@ -2,6 +2,8 @@
 #include <QDebug>
 #include "publishmessage.h"
 #include <QtWidgets>
+#include <QApplication>
+#include <QClipboard>
 
 PublishMessage::PublishMessage(QWidget *parent)
 {
@@ -252,6 +254,13 @@ void PublishMessage::uiInit(QWidget *widget)
     //生成按钮
     QPushButton * generate_button = new QPushButton("生成");
     connect(generate_button, SIGNAL(clicked()), this, SLOT(slots_generate_button_clicked()));
+    //生成并复制按钮
+    QPushButton * generate_cpoy_button = new QPushButton("生成并复制");
+    connect(generate_cpoy_button, SIGNAL(clicked()), this, SLOT(slots_generate_cpoy_button_clicked()));
+    //单选框的水平布局
+    QHBoxLayout *hLayout_7 = new QHBoxLayout();
+    hLayout_7->addWidget(generate_button);
+    hLayout_7->addWidget(generate_cpoy_button);
 
     //指令输出框
     cmd_textedit = new QTextEdit();
@@ -263,8 +272,9 @@ void PublishMessage::uiInit(QWidget *widget)
     vLayout->addLayout(hLayout_3);
     vLayout->addWidget(topic_groupbox);
     vLayout->addLayout(hLayout_5);
-    vLayout->addWidget(payload_groupbox);
-    vLayout->addWidget(generate_button);
+    vLayout->addLayout(hLayout_6);
+    vLayout->addWidget(payload_textedit);
+    vLayout->addLayout(hLayout_7);
     vLayout->addWidget(cmd_textedit);
 
     widget->setLayout(vLayout);
@@ -333,4 +343,14 @@ void PublishMessage::slots_generate_button_clicked(void)
 
     cmd_textedit->clear();
     cmd_textedit->setText(str);
+}
+
+void PublishMessage::slots_generate_cpoy_button_clicked()
+{
+    slots_generate_button_clicked();
+
+    QString str = cmd_textedit->toPlainText();
+
+    QClipboard *clipboard = QApplication::clipboard();   //获取系统剪贴板指针
+    clipboard->setText(str);
 }
