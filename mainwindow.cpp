@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "controlmessage.h"
 #include "publishmessage.h"
+#include "connectmessage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(tabwidget);
     widget->setLayout(hLayout);
+
+    //初始化CONNECT报文页面
+    QWidget *connect_widget = new QWidget();
+    ConnectMessage * connect_obj = new ConnectMessage(this);
+    connect_obj->uiInit(connect_widget);
+    tabwidget->addTab(connect_widget, "CONNECT");
 
     //初始化PUBLISH报文页面
     QWidget *publish_widget = new QWidget();

@@ -1,14 +1,7 @@
 
 #include <QDebug>
-#include <QComboBox>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QButtonGroup>
-#include <QRadioButton>
-#include <QTextEdit>
-#include <QLineEdit>
-#include <QPushButton>
 #include "publishmessage.h"
+#include <QtWidgets>
 
 PublishMessage::PublishMessage(QWidget *parent)
 {
@@ -206,6 +199,15 @@ void PublishMessage::uiInit(QWidget *widget)
     //创建topic输入框
     topic_textedit = new QTextEdit();
 
+    //topic垂直布局
+    QVBoxLayout *vLayout_1 = new QVBoxLayout();
+    vLayout_1->addLayout(hLayout_4);
+    vLayout_1->addWidget(topic_textedit);
+
+    //Topic盒子
+    QGroupBox *topic_groupbox = new QGroupBox("Topic", this);
+    topic_groupbox->setLayout(vLayout_1);
+
     //创建报文标识符输入框
     QLabel * pack_id_label = new QLabel("Packet Identifier:");
     pack_id_lineedit = new QLineEdit();
@@ -238,6 +240,15 @@ void PublishMessage::uiInit(QWidget *widget)
     //创建Payload输入框
     payload_textedit = new QTextEdit();
 
+    //topic垂直布局
+    QVBoxLayout *vLayout_2 = new QVBoxLayout();
+    vLayout_2->addLayout(hLayout_6);
+    vLayout_2->addWidget(payload_textedit);
+
+    //Payload盒子
+    QGroupBox *payload_groupbox = new QGroupBox("Payload", this);
+    payload_groupbox->setLayout(vLayout_2);
+
     //生成按钮
     QPushButton * generate_button = new QPushButton("生成");
     connect(generate_button, SIGNAL(clicked()), this, SLOT(slots_generate_button_clicked()));
@@ -245,15 +256,14 @@ void PublishMessage::uiInit(QWidget *widget)
     //指令输出框
     cmd_textedit = new QTextEdit();
 
+    //所有控件垂直布局
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout_1);
     vLayout->addLayout(hLayout_2);
     vLayout->addLayout(hLayout_3);
-    vLayout->addLayout(hLayout_4);
-    vLayout->addWidget(topic_textedit);
+    vLayout->addWidget(topic_groupbox);
     vLayout->addLayout(hLayout_5);
-    vLayout->addLayout(hLayout_6);
-    vLayout->addWidget(payload_textedit);
+    vLayout->addWidget(payload_groupbox);
     vLayout->addWidget(generate_button);
     vLayout->addWidget(cmd_textedit);
 
