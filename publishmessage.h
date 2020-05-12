@@ -1,9 +1,7 @@
 #ifndef PUBLISHMESSAGE_H
 #define PUBLISHMESSAGE_H
 
-#include <QComboBox>
-#include <QButtonGroup>
-#include <QTextEdit>
+#include <QtWidgets>
 #include "controlmessage.h"
 
 class PublishMessage : public ControlMessage

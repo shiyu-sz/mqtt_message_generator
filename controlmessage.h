@@ -1,8 +1,7 @@
 #ifndef CONTROLMESSAGE_H
 #define CONTROLMESSAGE_H
 
-#include <QWidget>
-#include <QList>
+#include <QtWidgets>
 
 class ControlMessage : public QWidget
 {

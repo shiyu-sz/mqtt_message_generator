@@ -242,7 +242,7 @@ void PublishMessage::uiInit(QWidget *widget)
     //创建Payload输入框
     payload_textedit = new QTextEdit();
 
-    //topic垂直布局
+    //Payload垂直布局
     QVBoxLayout *vLayout_2 = new QVBoxLayout();
     vLayout_2->addLayout(hLayout_6);
     vLayout_2->addWidget(payload_textedit);
@@ -273,7 +273,7 @@ void PublishMessage::uiInit(QWidget *widget)
     vLayout->addWidget(topic_groupbox);
     vLayout->addLayout(hLayout_5);
     vLayout->addLayout(hLayout_6);
-    vLayout->addWidget(payload_textedit);
+    vLayout->addWidget(payload_groupbox);
     vLayout->addLayout(hLayout_7);
     vLayout->addWidget(cmd_textedit);
 

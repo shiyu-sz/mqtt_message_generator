@@ -1,6 +1,5 @@
 
-#include <QDebug>
-#include <QHBoxLayout>
+#include <QtWidgets>
 #include "mainwindow.h"
 #include "controlmessage.h"
 #include "publishmessage.h"

@@ -1,5 +1,5 @@
 
-#include <QDebug>
+#include <QtWidgets>
 #include "controlmessage.h"
 
 ControlMessage::ControlMessage()

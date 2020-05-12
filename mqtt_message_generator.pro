@@ -28,10 +28,12 @@ SOURCES += \
         mainwindow.cpp \
     controlmessage.cpp \
     connectmessage.cpp \
-    publishmessage.cpp
+    publishmessage.cpp \
+    subscribe.cpp
 
 HEADERS += \
         mainwindow.h \
     controlmessage.h \
     connectmessage.h \
-    publishmessage.h
+    publishmessage.h \
+    subscribe.h
