@@ -10,7 +10,7 @@ public:
     ConnectMessage(QWidget *parent);
 
     QList<quint8> generateMessage(void);
-    void uiInit(QWidget *widget);
+    QWidget * uiInit();
 
 private slots:
 

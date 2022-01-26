@@ -11,8 +11,9 @@ ConnectMessage::ConnectMessage(QWidget *parent)
  * @brief PublishMessage::uiInit 初始化ui
  * @param widget
  */
-void ConnectMessage::uiInit(QWidget *widget)
+QWidget * ConnectMessage::uiInit()
 {
+    ui_widget = new QWidget();
     //协仪版本
     QLabel * level_label = new QLabel("Protocol Level:");
     level_combobox = new QComboBox();
@@ -261,5 +262,6 @@ void ConnectMessage::uiInit(QWidget *widget)
     hLayout->setSpacing(10);
     hLayout->setContentsMargins(10,10,10,10);
 
-    widget->setLayout(hLayout);
+    ui_widget->setLayout(hLayout);
+    return ui_widget;
 }

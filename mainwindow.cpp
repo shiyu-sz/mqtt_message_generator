@@ -21,15 +21,13 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setLayout(hLayout);
 
     //初始化CONNECT报文页面
-    QWidget *connect_widget = new QWidget();
     ConnectMessage * connect_obj = new ConnectMessage(this);
-    connect_obj->uiInit(connect_widget);
+    QWidget * connect_widget = connect_obj->uiInit();
     tabwidget->addTab(connect_widget, "CONNECT");
 
     //初始化PUBLISH报文页面
-    QWidget *publish_widget = new QWidget();
     PublishMessage * publish_obj = new PublishMessage(this);
-    publish_obj->uiInit(publish_widget);
+    QWidget *publish_widget = publish_obj->uiInit();
     tabwidget->addTab(publish_widget, "PUBLISH");
 
 //    publish_obj->setDup(0);

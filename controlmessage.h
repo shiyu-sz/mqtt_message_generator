@@ -27,6 +27,11 @@ public:
     };
 
     QList<quint8> ComputeRemainingLength(quint32 num);
+
+    QWidget * ui_widget;
+
+private:
+
 };
 
 #endif // CONTROLMESSAGE_H

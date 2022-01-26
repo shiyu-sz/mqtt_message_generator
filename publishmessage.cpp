@@ -139,8 +139,10 @@ QList<quint8> PublishMessage::generateMessage(void)
  * @brief PublishMessage::uiInit 初始化ui
  * @param widget
  */
-void PublishMessage::uiInit(QWidget *widget)
+QWidget * PublishMessage::uiInit()
 {
+    ui_widget = new QWidget();
+
     //创建dup
     QLabel * dup_label = new QLabel("DUP:");
     dup_combobox = new QComboBox();
@@ -277,7 +279,8 @@ void PublishMessage::uiInit(QWidget *widget)
     vLayout->addLayout(hLayout_7);
     vLayout->addWidget(cmd_textedit);
 
-    widget->setLayout(vLayout);
+    ui_widget->setLayout(vLayout);
+    return ui_widget;
 }
 
 /**

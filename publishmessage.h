@@ -12,7 +12,7 @@ public:
     PublishMessage(QWidget *parent = 0);
 
     QList<quint8> generateMessage(void);
-    void uiInit(QWidget *widget);
+    QWidget * uiInit();
     void setDup(quint8 value);
     void setQos(quint8 value);
     void setRetain(quint8 value);
